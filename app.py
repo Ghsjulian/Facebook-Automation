@@ -4,8 +4,8 @@ from flask import Flask, request,jsonify,render_template
 
 
 app = Flask(__name__)
-email = ""
-password = ""
+email = "01302661227"
+password = "ghs_smith:"
 fb = Facebook(email, password)
 #fb.friend_request()
 
@@ -21,7 +21,7 @@ def index():
 @app.route('/chat_list')
 def chat_list():
     #return render_template('index.html')
-    chat_list = fb.message()
+    chat_list = fb.__Inbox__()
     user_info = json.dumps(str(chat_list))
     cnvrt_data = json.loads(user_info)
     return jsonify(chat_list)

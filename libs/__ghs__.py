@@ -32,7 +32,7 @@ class Facebook:
         self.username = username
         self.password = password
         if self.check_login():
-            print("Login Successful")
+            print("[+]  Login Successful \n")
         else:
             self.sign_in()
 
@@ -104,82 +104,135 @@ class Facebook:
         
 
 
-    def friend_request(self):
-        self.browser.open("https://mobile.facebook.com/friends/center/requests/")
-        response = self.browser.response()
-        res_data = response.read()
-        res = res_data.decode()
-        file.save_data(str(res))
-        print("Friends...")
+    def friend_request(self,url="https://free.facebook.com/friends/center/mbasic/"):
+        self.browser.open(url)
+        users = ""
+        count = 0
         for link in self.browser.links():
-            if link.text == "Confirm":
-                for link2 in self.browser.links():
-                    print(link2.text)
-            
-        
-        
-        
-    def message(self):
-        self.browser.open("https://mobile.facebook.com/messages/")
-        response = self.browser.response()
-        res_data = response.read()
-        res = res_data.decode()
-        #file.save_data(str(res))
-        print("Message...")
-        data = ["Home","Profile","Messages","Notifications","Chat","Friends","Pages","Groups","Menu","New Message","New Group","Search for messages","See Older Messages","View Message Requests","View Filtered Messages","View Archived Messages","View Unread Messages","View Spam Messages","Active friends","Your Pages","Help","Settings & privacy","Report a problem","Terms & Policies","Logout","Back To Top"]
-        users = {}
-        msg_link = "https://mobile.facebook.com/messages/read/?tid=cid.c.100086161317364%3A100086562424514"
-        for link in self.browser.links():
-            if link.text in data:
-                continue
-            #print(link.text)
-            users[link.text]=link.attrs[0][1]
-        return users
-            
-        
+            if link.attrs[0][1] == "ck" or link.attrs[0][1] == "ca" or link.attrs[0][1] == "cn":
+                users = link.text
+            if link.text == "Add Friend":
+                self.browser.follow_link(link)
+                print(color.BOLD+color.YELLOW+"Sending Friend Request ===>> "+color.BOLD+color.LIGHT_WHITE+users+"\n")
+                response = self.browser.response()
+                res_data = response.read()
+                res = res_data.decode()
+                count+=1
+                #file.save_data(res)
+        print(color.BOLD+color.LIGHT_CYAN+f"\nTotal {count} Request Was Sent \n")
         
         
         
     
-    def inbox(self,msg_id):
-        url = "https://free.facebook.com"+msg_id
+    def __Cancel_Request__(self):
+        url = "https://free.facebook.com/friends/center/requests/outgoing/"
         self.browser.open(url)
+        users = ""
+        count = 0
+        for link in self.browser.links():
+           if link.attrs[0][1] == "be bg ca cb bf" or link.attrs[0][1] == "bw":
+               users = link.text
+           if link.text == "Cancel Request":
+               self.browser.follow_link(link)
+               print(color.BOLD+color.YELLOW+"Canceling Friend Request ===>> "+color.BOLD+color.LIGHT_WHITE+users+"\n")
+               response = self.browser.response()
+               res_data = response.read()
+               res = res_data.decode()
+               count+=1
+        print(color.BOLD+color.LIGHT_CYAN+f"\nTotal {count} Request Was Cancelled\n")
+        
+            
+        
+    def __Inbox__(self):
+        self.browser.open("https://free.facebook.com/messages/")
         response = self.browser.response()
         res_data = response.read()
         res = res_data.decode()
         #file.save_data(res)
         soup = BeautifulSoup(res, 'html.parser')
-        data = []
+        table = soup.find_all("table",{"class":"bm bn bo bp e bq br bs"})
+        names = BeautifulSoup(str(table),"html.parser")
+        elements = names.find_all("a")
+        users = {}
+        for a in elements:
+            users[a.get_text()]=a.attrs.get("href")
+            #print(a.get_text())
+        #return users
+        print(users)
         
-        message_elements = soup.find_all("div", {"class": "e bx by"})
-        for a in message_elements.find_all('a'):
-            print(a)
-        # Extract the message text from each element
-        #messages = [re.sub(r'\n', '', message_element.get_text()) for message_element in message_elements]
-        # Print the messages
-        #for message in message_elements:
-            #print(message)
-        
-        """
-         #extract and print the text from each span tag
-        for span in soup.find_all('span'):
-            data.append(span.text)
-        return data[::-1]
-        """
-       
     
     
     
-    
-        
-        """
+    def __Chatbox__(self,msg_id):
+        self.browser.open('https://free.facebook.com/messages/t/{}/'.format(msg_id))
         response = self.browser.response()
         res_data = response.read()
         res = res_data.decode()
-        file.save_data(str(res))
-        print("Friends...")
-        """
+        #file.save_data(res)
+        soup = BeautifulSoup(res, 'html.parser')
+        table = soup.find_all("div",{"class":"e bx by"})
+        bz = BeautifulSoup(str(table),"html.parser")
+        bz2 = bz.find_all("div",{"class":"bz"})
+        #file.save_data(str(bz2))
+        sa = BeautifulSoup(str(bz2),"html.parser")
+        users = sa.find_all("strong",{"class":"cc"})
+        name = BeautifulSoup(str(users),"html.parser")
+        div_span = sa.find_all("div")
+        msg = BeautifulSoup(str(div_span),"html.parser")
+        msg_data = {}
+        friends = []
+        text = []
+        for i in name:
+            if i.get_text().strip() == ",":
+                continue
+            friends.append(i.get_text())
+        #print(friends[0])
+        for i in msg:
+            if i.get_text().strip() == ",":
+                continue
+            text.append(i.get_text())
         
-
-
-
+        print(text)
+        """
+        Separate Users Chat Here...
+        """
+    
+    def __send_message__(self,url):
+        self.browser.open(url)
+        
+        response = self.browser.response()
+        res_data = response.read()
+        res = res_data.decode()
+        file.save_data(res)
+    
+    def __get_messages__(self,user):
+        self.browser.open('https://free.facebook.com/messages/t/{}/'.format(user))
+        response = self.browser.response()
+        res_data = response.read()
+        res = res_data.decode()
+        file.save_data(res)
+        soup = BeautifulSoup(res_data, 'html.parser')
+        conversations = {}
+        for thread in soup.find_all("div",{"class":"e bx by"}):
+            print(thread)
+            
+            
+    
+    
+    
+    
+    
+    def write_post(self):
+        url ="https://free.facebook.com/"
+        self.browser.open(url)
+        self.browser.select_form(nr=1)
+        #self.browser["xc_message"] = "Something..."
+        #self.browser.submit()
+        time.sleep(2)
+        #self.browser.submit()
+        response = self.browser.response()
+        res_data = response.read()
+        res = res_data.decode()
+        file.save_data(res)
+        soup = BeautifulSoup(res, 'html.parser')
+        

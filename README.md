@@ -4,8 +4,21 @@
 
 <strong>
   This is a Facebook Automation using python. You can automate your Facebook
-  account using this tools . It's Awesome 😎
+  account using this tools . It's Awesome 😎 . You can manage your Facebook
+  account easily.
 </strong>
+<br><br>
+<h1> Features And Uses</h1>
+
+
+```html
+[1] View Inbox
+[2] Send Messages 
+[3] Send Friend Requests
+[4] Write Post
+[5] Get Profile Info 
+```
+
 <br><br>
 <h1> Installation & Command</h1>
 <br>
@@ -43,6 +56,38 @@ def chat_list():
 
 
 ```
+
+<br><br>
+
+<strong> Methods And Object : </strong>
+
+```python
+from libs.__ghs__ import Facebook
+
+email = "your_email"
+password = "your_password"
+fb = Facebook(email, password)
+
+
+fb.friend_request()
+# It will send friend request...
+
+fb.__Chatbox__("recipient url")
+# Enter A users msg url...
+
+fb.__Inbox__()
+# It Will Open Inbox...
+
+fb.check_login()
+# Check If User Login Or Not...
+
+fb.get_cookies("c_user")
+# Get The User Id From Cookies...
+
+````
+
+
+
 
 <br><br>
 <h1>Demo & Screenshots</h1>

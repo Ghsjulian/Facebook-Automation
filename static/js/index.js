@@ -25,9 +25,19 @@ return res.json();
 }).then((data)=>{
 if (data){
 Selector("#inbox").style.display = "block";
-for (let name in data){
-Selector(".user").innerHTML += `<a id="user_na" link="link">${name}</a>`;
+for (let key in data) {
+if (data.hasOwnProperty(key)) {
+Selector(".user").innerHTML += `<a id="user_na" msg_link="${data[key]}">${key}</a>`;
 }
+}
+setTimeout(()=>{
+var friends = document.querySelectorAll("#user_na");
+for (var i = 0; i < friends.length; i++){
+friends[i].onclick = (e)=>{
+alert("hii")
+}
+}
+}, 1000);
 }
 })
 }
@@ -78,6 +88,15 @@ default:
     }
     }
     }
+
+
+
+
+
+
+
+
+
 
 
     setTimeout(()=> {

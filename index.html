@@ -1,24 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" type="text/css" href="static/css/index.css" />
+
+<title>
+KALI - LINUX | Ghs Julian | Programmer | Web Developer Programmer
+</title>
+</head>
+<body>
+
 <script>
-    window.location.href = "http://localhost:5000"
+    //window.location.href = "http://localhost:5000"
 </script>
 
 
 
-<div style="display: none" id="form" class="container">
+<div style="display: block" id="chat-box" class="">
 <input id="hidden-data" type="text" value="" hidden="true" />
-<img id="cross" src="static/icons/cross.png" />
+<img class="chat-cross" id="cross" src="static/icons/cross.png" />
+<h3 id="u_name">Alina Lopez</h3>
+<form id="chat">
+<small id="left">Hello Ji Kaise Ho Aap</small>
+<small id="right">Hmm, mein achhi huu app?</small>
+<small id="left">Kiya kar rahe hoo ?</small>
+<small id="right">Kuchh nahi bas coding</small>
+<small id="left">Achha Thik hai</small>
+<small id="right">Khana kha liya app ne?</small>
+<small id="left">Han ji khha liya ! app </small>
+<small id="right">Bad mein khha lunga </small>
+<small id="left">Thik hai </small>
+<small id="right">Coding kar raha huu !</small>
 
-
-
-<form id="login">
-<h3>Enter Login Info</h3>
-<input
-type="text"
-id="idName"
-name="loginId"
-placeholder="Enter ID/Phone/Email"
-/>
-<button id="btn">Submit</button>
+<div class="type">
+    <textarea id="msg" placeholder="Write Message..."></textarea>
+    <button id="btn">Submit</button>
+</div>
 </form>
 
 </div>
+</body></html>
