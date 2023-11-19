@@ -8,8 +8,8 @@ from flask import Flask, request,jsonify,render_template
 
 
 app = Flask(__name__)
-email = "01302661227"
-password = "ghs_smith:"
+email = ""
+password = ""
 
 if not os.path.exists('config/cookies.json'):
     email_id = input(color.BOLD+color.YELLOW+color.BOLD+"\n[+] Enter Email/ID/Phone : "+color.LIGHT_CYAN)
@@ -19,7 +19,7 @@ if not os.path.exists('config/cookies.json'):
 
 
 fb = Facebook(email, password)
-user ="100088668742389"
-inbox = fb.__Chatbox__(user)
+user ="100041190461932"
+inbox = fb.write_post()
 
 #print(inbox)

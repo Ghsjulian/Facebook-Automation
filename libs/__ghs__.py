@@ -148,17 +148,18 @@ class Facebook:
         response = self.browser.response()
         res_data = response.read()
         res = res_data.decode()
-        #file.save_data(res)
+        file.save_data(res)
         soup = BeautifulSoup(res, 'html.parser')
         table = soup.find_all("table",{"class":"bm bn bo bp e bq br bs"})
         names = BeautifulSoup(str(table),"html.parser")
         elements = names.find_all("a")
         users = {}
+        print(elements)
         for a in elements:
             users[a.get_text()]=a.attrs.get("href")
             #print(a.get_text())
         #return users
-        print(users)
+        #print(users)
         
     
     
@@ -226,10 +227,15 @@ class Facebook:
         url ="https://free.facebook.com/"
         self.browser.open(url)
         self.browser.select_form(nr=1)
-        #self.browser["xc_message"] = "Something..."
-        #self.browser.submit()
+        self.browser["xc_message"] = "Something..."
+        self.browser.submit()
         time.sleep(2)
-        #self.browser.submit()
+        self.browser.select_form(nr=0)
+        self.browser.form['update_default_privacy']=["on"]
+        self.browser.submit()
+        self.browser.select_form(nr=0)
+        self.browser["xc_message"] = "Something..."
+        self.browser.submit()
         response = self.browser.response()
         res_data = response.read()
         res = res_data.decode()

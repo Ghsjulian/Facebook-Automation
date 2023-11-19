@@ -4,8 +4,17 @@ from flask import Flask, request,jsonify,render_template
 
 
 app = Flask(__name__)
-email = "01302661227"
-password = "ghs_smith:"
+
+if not os.path.exists('config/cookies.json'):
+    email_id = input(color.BOLD+color.YELLOW+color.BOLD+"\n[+] Enter Email/ID/Phone : "+color.LIGHT_CYAN)
+    u_pass = input(color.BOLD+color.YELLOW+color.BOLD+"\n[+] Enter Facebook Password : "+color.LIGHT_CYAN)
+    fb = Facebook(email_id,u_pass)
+
+
+
+
+email = ""
+password = ""
 fb = Facebook(email, password)
 #fb.friend_request()
 
@@ -31,4 +40,3 @@ def chat_list():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
