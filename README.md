@@ -24,7 +24,7 @@
 <br>
 
 ```bash
-git clone && cd Facebook && pip install -r requirements.txt && python app.py
+git clone https://github.com/Ghsjulian/Facebook.git && cd Facebook && pip install -r requirements.txt && python app.py
 ```
 
 <br>
