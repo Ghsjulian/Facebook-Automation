@@ -9,11 +9,13 @@ from libs import agent
 import json 
 import os
 import urllib.parse
+from threading import Thread, Lock
 
 class Facebook:
     def __init__(self, username, password):
         self.browser = mechanize.Browser()
         self.cj = mechanize.CookieJar()
+        self.print_lock = Lock()
         self.browser.set_cookiejar(self.cj)
         self.browser.set_handle_equiv(True)
         self.browser.set_handle_gzip(True)
@@ -113,13 +115,13 @@ class Facebook:
                 users = link.text
             if link.text == "Add Friend":
                 self.browser.follow_link(link)
-                print(color.BOLD+color.YELLOW+"Sending Friend Request ===>> "+color.BOLD+color.LIGHT_WHITE+users+"\n")
+                print(color.BOLD+color.YELLOW+"  Sending Friend Request ===>> "+color.BOLD+color.LIGHT_WHITE+users+"\n")
                 response = self.browser.response()
                 res_data = response.read()
                 res = res_data.decode()
                 count+=1
                 #file.save_data(res)
-        print(color.BOLD+color.LIGHT_CYAN+f"\nTotal {count} Request Was Sent \n")
+        print(color.BOLD+color.LIGHT_CYAN+f"\n  Total {count} Request Was Sent \n")
         
         
         
@@ -134,12 +136,12 @@ class Facebook:
                users = link.text
            if link.text == "Cancel Request":
                self.browser.follow_link(link)
-               print(color.BOLD+color.YELLOW+"Canceling Friend Request ===>> "+color.BOLD+color.LIGHT_WHITE+users+"\n")
+               print(color.BOLD+color.YELLOW+"  Canceling Friend Request ===>> "+color.BOLD+color.LIGHT_WHITE+users+"\n")
                response = self.browser.response()
                res_data = response.read()
                res = res_data.decode()
                count+=1
-        print(color.BOLD+color.LIGHT_CYAN+f"\nTotal {count} Request Was Cancelled\n")
+        print(color.BOLD+color.LIGHT_CYAN+f"\n  Total {count} Request Was Cancelled\n")
         
             
         
@@ -148,7 +150,7 @@ class Facebook:
         response = self.browser.response()
         res_data = response.read()
         res = res_data.decode()
-        file.save_data(res)
+        #file.save_data(res)
         soup = BeautifulSoup(res, 'html.parser')
         table = soup.find_all("table",{"class":"bm bn bo bp e bq br bs"})
         names = BeautifulSoup(str(table),"html.parser")
@@ -198,13 +200,6 @@ class Facebook:
         Separate Users Chat Here...
         """
     
-    def __send_message__(self,url):
-        self.browser.open(url)
-        
-        response = self.browser.response()
-        res_data = response.read()
-        res = res_data.decode()
-        file.save_data(res)
     
     def __get_messages__(self,user):
         self.browser.open('https://free.facebook.com/messages/t/{}/'.format(user))
@@ -218,9 +213,6 @@ class Facebook:
             print(thread)
             
             
-    
-    
-    
     
     
     def write_post(self):
@@ -239,6 +231,50 @@ class Facebook:
         response = self.browser.response()
         res_data = response.read()
         res = res_data.decode()
-        file.save_data(res)
+        #file.save_data(res)
         soup = BeautifulSoup(res, 'html.parser')
         
+    
+    
+    
+    
+    def make_friends(self,url="https://free.facebook.com/friends/center/mbasic/"):
+        self.browser.open(url)
+        response = self.browser.response()
+        res_data = response.read()
+        res = res_data.decode()
+        #file.save_data(res)
+        users = ""
+        count = 0
+        for link in self.browser.links():
+            if link.attrs[0][1] == "ck" or link.attrs[0][1] == "ca" or link.attrs[0][1] == "cn":
+                users = link.text
+            if link.text == "Add Friend":
+                with open("config/friend_list.txt", 'r') as frnd_title:
+                    names = [line.strip() for line in frnd_title]
+                    for title in names:
+                        if title in users.strip():
+                            self.browser.follow_link(link)
+                            print(color.BOLD+color.YELLOW+"  Sending Friend Request ===>> "+color.BOLD+color.LIGHT_WHITE+users+"\n")
+                            response = self.browser.response()
+                            res_data = response.read()
+                            res = res_data.decode()
+                            count+=1
+                            #file.save_data(res)
+        #print(color.BOLD+color.LIGHT_CYAN+f" \n  Total {count} Request Was Sent \n")
+    
+
+    def __send_message__(self,user,msg):
+        self.browser.open('https://free.facebook.com/messages/t/{}/'.format(user))
+        self.browser.select_form(nr=1)
+        self.browser.form['body'] = msg
+        self.browser.submit()
+        response = self.browser.response()
+        res_data = response.read()
+        res = res_data.decode()
+        #file.save_data(res)
+        soup = BeautifulSoup(res_data, 'html.parser')
+        print("sending...")
+        
+    
+    

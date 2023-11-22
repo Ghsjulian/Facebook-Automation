@@ -19,7 +19,10 @@ if not os.path.exists('config/cookies.json'):
 
 
 fb = Facebook(email, password)
-user ="100041190461932"
-inbox = fb.write_post()
+#user ="100041190461932"
+while True:
+    inbox = fb.make_friends()
 
 #print(inbox)
+
+

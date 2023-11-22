@@ -96,4 +96,6 @@ fb.get_cookies("c_user")
 <img src="ss/S2.png" width="290" height="270"><br><br>
 <img src="ss/S3.png" width="290" height="270"><br><br>
 <img src="ss/S4.png" width="290" height="270">
+<img src="ss/S5.png" width="290" height="270">
+<img src="ss/S6.png" width="290" height="270">
 </center>
