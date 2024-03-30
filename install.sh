@@ -11,7 +11,6 @@ pkg install figlet
 pkg install wget
 pkg install lolcat
 pip install mechanize
-pip install flask
 pip install BeautifulSoup
 pip install urllib
 pip install lolcat
@@ -26,4 +25,4 @@ figlet -small 'Ghs Julian' | lolcat
 
 printf "\n"
 
-printf "\n You can use it by the command 'python app.py'. It will be started port number 5000. \n"
+printf "\n You can use it by the command 'python __run__.py'. \n"

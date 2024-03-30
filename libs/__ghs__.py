@@ -12,6 +12,9 @@ import urllib.parse
 from threading import Thread, Lock
 
 class Facebook:
+    """ Create A Object Of This Class And Send Two Parameters.
+    As Arguments First One Is User Name/Email/Phone/ID Number
+    And Second One Is Password. """
     def __init__(self, username, password):
         self.browser = mechanize.Browser()
         self.cj = mechanize.CookieJar()
@@ -34,13 +37,9 @@ class Facebook:
         self.username = username
         self.password = password
         if self.check_login():
-            print("[+]  Login Successful \n")
+            self.welcom()
         else:
             self.sign_in()
-
-
-
-
     def sign_in(self):
         self.browser.open('https://free.facebook.com/login.php')
         self.browser.select_form(nr=0)
@@ -58,11 +57,23 @@ class Facebook:
             self.checkpoint()
         else:
             self.save_cookie()
-        
-        
-       
-        
-        
+    def welcom(self):
+        self.browser.open('https://free.facebook.com/profile')
+        time.sleep(0.5)
+        response_data = self.browser.response()
+        res_data = response_data.read()
+        res = res_data.decode()
+        soup = BeautifulSoup(res, 'html.parser')
+        name = soup.find("title")
+        #file.save_data(str(res))
+        os.system("clear")
+        print("\n")
+        os.system('figlet -f small "  Facebook "|lolcat')
+        print("\n")
+        print(color.YELLOW+color.BOLD+"  [+] Account Owner : "+color.BOLD+color.LIGHT_CYAN+name.get_text())
+        print("\n"+color.YELLOW+color.BOLD+"  [+] Login Status : "+color.BOLD+color.GREEN+"Successful")
+        print("\n"+color.YELLOW+color.BOLD+"  [+] Profile ID : "+color.BOLD+color.RED+self.get_cookies("c_user"))
+        print("\n")
     def save_cookie(self):
         cookies = self.cj
         cookie_info = {}
@@ -71,41 +82,21 @@ class Facebook:
         f = open("config/cookies.json", "w")
         f.write(json.dumps(cookie_info))
         f.close()
-
-
-
     def checkpoint(self):
         self.sign_in()
-
-
-
-
     def check_login(self):
         if 'c_user' in [cookie.name for cookie in self.browser.cookiejar]:
             return True
         else:
             return False
-
-
-
-
     def set_cookie(self,c_name,c_value):
         c = cookielib.Cookie(version=0, name=c_name, value=c_value, port=None, port_specified=False, domain='.facebook.com', domain_specified=True, domain_initial_dot=True, path='/', path_specified=True, secure=False, expires=None, discard=True, comment=None, comment_url=None, rest={}, rfc2109=False)
         self.cj.set_cookie(c)
-        
-        
-       
-
-
     def get_cookies(self,name):
         f = open("config/cookies.json", "r")
         f_data = f.read()
         json_data = json.loads(f_data)
         return json_data[name]
-        
-        
-
-
     def friend_request(self,url="https://free.facebook.com/friends/center/mbasic/"):
         self.browser.open(url)
         users = ""
@@ -122,10 +113,6 @@ class Facebook:
                 count+=1
                 #file.save_data(res)
         print(color.BOLD+color.LIGHT_CYAN+f"\n  Total {count} Request Was Sent \n")
-        
-        
-        
-    
     def __Cancel_Request__(self):
         url = "https://free.facebook.com/friends/center/requests/outgoing/"
         self.browser.open(url)
@@ -142,79 +129,6 @@ class Facebook:
                res = res_data.decode()
                count+=1
         print(color.BOLD+color.LIGHT_CYAN+f"\n  Total {count} Request Was Cancelled\n")
-        
-            
-        
-    def __Inbox__(self):
-        self.browser.open("https://free.facebook.com/messages/")
-        response = self.browser.response()
-        res_data = response.read()
-        res = res_data.decode()
-        #file.save_data(res)
-        soup = BeautifulSoup(res, 'html.parser')
-        table = soup.find_all("table",{"class":"bm bn bo bp e bq br bs"})
-        names = BeautifulSoup(str(table),"html.parser")
-        elements = names.find_all("a")
-        users = {}
-        print(elements)
-        for a in elements:
-            users[a.get_text()]=a.attrs.get("href")
-            #print(a.get_text())
-        #return users
-        #print(users)
-        
-    
-    
-    
-    def __Chatbox__(self,msg_id):
-        self.browser.open('https://free.facebook.com/messages/t/{}/'.format(msg_id))
-        response = self.browser.response()
-        res_data = response.read()
-        res = res_data.decode()
-        #file.save_data(res)
-        soup = BeautifulSoup(res, 'html.parser')
-        table = soup.find_all("div",{"class":"e bx by"})
-        bz = BeautifulSoup(str(table),"html.parser")
-        bz2 = bz.find_all("div",{"class":"bz"})
-        #file.save_data(str(bz2))
-        sa = BeautifulSoup(str(bz2),"html.parser")
-        users = sa.find_all("strong",{"class":"cc"})
-        name = BeautifulSoup(str(users),"html.parser")
-        div_span = sa.find_all("div")
-        msg = BeautifulSoup(str(div_span),"html.parser")
-        msg_data = {}
-        friends = []
-        text = []
-        for i in name:
-            if i.get_text().strip() == ",":
-                continue
-            friends.append(i.get_text())
-        #print(friends[0])
-        for i in msg:
-            if i.get_text().strip() == ",":
-                continue
-            text.append(i.get_text())
-        
-        print(text)
-        """
-        Separate Users Chat Here...
-        """
-    
-    
-    def __get_messages__(self,user):
-        self.browser.open('https://free.facebook.com/messages/t/{}/'.format(user))
-        response = self.browser.response()
-        res_data = response.read()
-        res = res_data.decode()
-        file.save_data(res)
-        soup = BeautifulSoup(res_data, 'html.parser')
-        conversations = {}
-        for thread in soup.find_all("div",{"class":"e bx by"}):
-            print(thread)
-            
-            
-    
-    
     def write_post(self):
         url ="https://free.facebook.com/"
         self.browser.open(url)
@@ -233,11 +147,6 @@ class Facebook:
         res = res_data.decode()
         #file.save_data(res)
         soup = BeautifulSoup(res, 'html.parser')
-        
-    
-    
-    
-    
     def make_friends(self,url="https://free.facebook.com/friends/center/mbasic/"):
         self.browser.open(url)
         response = self.browser.response()
@@ -262,19 +171,11 @@ class Facebook:
                             count+=1
                             #file.save_data(res)
         #print(color.BOLD+color.LIGHT_CYAN+f" \n  Total {count} Request Was Sent \n")
-    
-
-    def __send_message__(self,user,msg):
-        self.browser.open('https://free.facebook.com/messages/t/{}/'.format(user))
-        self.browser.select_form(nr=1)
-        self.browser.form['body'] = msg
-        self.browser.submit()
-        response = self.browser.response()
-        res_data = response.read()
-        res = res_data.decode()
-        #file.save_data(res)
-        soup = BeautifulSoup(res_data, 'html.parser')
-        print("sending...")
-        
-    
-    
+    def go_to(self,url):
+        if self.check_login:
+            self.browser.open(url)
+            response_data = self.browser.response()
+            res_data = response_data.read()
+            res = res_data.decode()
+            print(img_src)
+            file.save_data(img_src)
